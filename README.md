@@ -19,3 +19,21 @@ Error:  	Could not find artifact ch.qos.logback:logback-classic:jar:9.9.9 in cen
 
 Giải thích nguyên nhân kỹ thuật: Trong tệp pom.xml, dự án yêu cầu Maven tải thư viện logback-classic với phiên bản là 9.9.9 từ kho lưu trữ trung tâm (Maven Central). Tuy nhiên, phiên bản 9.9.9 này không hề tồn tại trên thực tế. Vì Maven không thể tìm và tải xuống gói phụ thuộc bắt buộc này, quá trình build thể tiếp tục và buộc phải dừng lại kèm theo thông báo lỗi không tìm thấy artifact.
 
+Lỗi 3: Lỗi Bỏ Qua Bài Kiểm Thử (Silent Test Skipping)
+
+Vị trí lỗi: Tệp pom.xml (Sử dụng phiên bản maven-surefire-plugin quá cũ không hỗ trợ JUnit 5).
+
+Đoạn log:
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.lab.ShippingCalculatorTest
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+Giải thích nguyên nhân kỹ thuật: Dự án sử dụng framework kiểm thử JUnit 5 (Jupiter), nhưng lại cấu hình maven-surefire-plugin phiên bản 2.12.4. Các phiên bản Surefire cũ (dưới 2.22.0) không hỗ trợ và không nhận diện được các annotation @Test của JUnit 5. Do đó, trong quá trình build, plugin này đã bỏ qua toàn bộ các bài test (báo cáo Tests run: 0) nhưng vẫn trả về kết quả Success. Đây là một lỗi "False Positive" cực kỳ nguy hiểm trong CI/CD.
+
+
