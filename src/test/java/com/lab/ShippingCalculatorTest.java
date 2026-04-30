@@ -2,8 +2,6 @@ package com.lab;
 
 import org.junit.jupiter.api.Test;
 
-import main.java.com.lab.ShippingCalculator;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ShippingCalculatorTest {
