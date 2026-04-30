@@ -34,6 +34,16 @@ Results :
 
 Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
 
-Giải thích nguyên nhân kỹ thuật: Dự án sử dụng framework kiểm thử JUnit 5 (Jupiter), nhưng lại cấu hình maven-surefire-plugin phiên bản 2.12.4. Các phiên bản Surefire cũ (dưới 2.22.0) không hỗ trợ và không nhận diện được các annotation @Test của JUnit 5. Do đó, trong quá trình build, plugin này đã bỏ qua toàn bộ các bài test (báo cáo Tests run: 0) nhưng vẫn trả về kết quả Success. Đây là một lỗi "False Positive" cực kỳ nguy hiểm trong CI/CD.
+Giải thích nguyên nhân kỹ thuật: Dự án sử dụng framework kiểm thử JUnit 5 (Jupiter), nhưng lại cấu hình maven-surefire-plugin phiên bản 2.12.4. Các phiên bản Surefire cũ (dưới 2.22.0) không hỗ trợ và không nhận diện được các annotation @Test của JUnit 5. Do đó, trong quá trình build, plugin này đã bỏ qua toàn bộ các bài test (báo cáo Tests run: 0) nhưng vẫn trả về kết quả Success.
 
+Lỗi 4: Chỉ chỉnh sửa đoạn code nghiệp vụ mà không sửa đoạn code test
+
+Đoạn log: 
+
+Error:  Failures: 
+Error:    ShippingCalculatorTest.testStandard:12 expected: <15000.0> but was: <17500.0>
+[INFO] 
+Error:  Tests run: 3, Failures: 1, Errors: 0, Skipped: 0
+
+Giải thích nguyên nhân kỹ thuật: Trong file ShippingCalculatorTest.java, test quy định: Trọng lượng 5kg gọi gói STANDARD thì kết quả phải là 15000.0 (5 x 3000). Tuy nhiên, do ta vừa đổi giá lên 3500, kết quả thực tế trả về là 17500.0. Sự bất đồng giữa "Kỳ vọng" (Expected) và "Thực tế" (Actual) khiến Unit Test đánh sập toàn bộ bản build, ngăn chặn việc mang đoạn code sai logic lên môi trường thật.
 
